@@ -99,7 +99,7 @@ The goal is to keep business logic independent from frameworks and infrastructur
 
 ## High-Level System View
 
-![RentIt+ Higl-Level System View](./diagrams/SystemOverview.png)
+![RentIt+ Higl-Level System View](./diagrams/SystemView.png)
 
 
 ---
