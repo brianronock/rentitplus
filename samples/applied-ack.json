@@ -1,0 +1,9 @@
+{
+  "entityType": "Order",
+  "clientEntityRef": "00000000-0000-4000-8000-000000000001",
+  "serverId": 101,
+  "operation": "CREATE",
+  "status": "APPLIED",
+  "serverVersion": 0,
+  "error": null
+}

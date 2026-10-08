@@ -1,279 +1,109 @@
+# RentIt+ | Rental and inventory management
 
+RentIt+ is a completed HTL diploma project: a rental and inventory management system with a JavaFX desktop client, a web administration interface, and a Spring Boot backend. The desktop client stores operational data in SQLite and synchronizes local changes with a central PostgreSQL database.
 
-# RentIt+ Companion Repository
+I created this companion repository to present RentIt+ through its architecture, workflows, desktop releases, and engineering decisions. The project was developed as an HTL diploma project by Brian Rono and Babak Nourbakhsh. The application source remains private; this repository provides a public view of how the system works.
 
-> Public showcase for the RentIt+ offline-first rental management platform.  
-> The production/diploma monorepo remains private, while this repository documents the architecture, synchronization model, screenshots, selected diagrams, and extractable engineering ideas behind the system.
+**[Download Desktop v1.2.3](https://github.com/brianronock/rentitplus/releases/tag/v1.2.3)** · **[Web SPA](https://rentitspa.brianronock.com)** · **[Portfolio](https://brianronock.com)**
 
----
+![RentIt+ web operations overview](screenshots/web-overview.png)
 
-## What is RentIt+?
+*The web interface brings location inventory and rental operations into a central view.*
 
-**RentIt+** is an offline-first rental and inventory management platform built as an HTL diploma project and portfolio system.
+## Download the desktop client
 
-The original application is designed for environments where staff must continue working even when network connectivity is unstable or unavailable. Typical examples include front desks, storage rooms, warehouses, event-equipment rooms, and location-based lending workflows.
-
-The private implementation combines:
-
-| Component | Role |
+| Platform | Installer |
 |---|---|
-| **Spring Boot backend** | Central authoritative API, business validation, sync endpoints, PostgreSQL persistence |
-| **JavaFX desktop client** | Staff-facing offline client with local SQLite persistence |
-| **Web SPA** | Browser-based admin and management interface |
-| **Observability subsystem** | Live insight into sync events, HTTP activity, health, and domain errors |
-| **Python load lab** | Stress-testing and scenario execution for backend and sync behavior |
+| macOS | [RentIt+.Desktop-1.2.3.dmg](https://github.com/brianronock/rentitplus/releases/download/v1.2.3/RentIt%2B.Desktop-1.2.3.dmg) |
+| Windows | [RentIt+.Desktop-1.2.3.exe](https://github.com/brianronock/rentitplus/releases/download/v1.2.3/RentIt%2B.Desktop-1.2.3.exe) |
+| Linux, amd64 | [rentitplus-desktop_1.2.3_amd64.deb](https://github.com/brianronock/rentitplus/releases/download/v1.2.3/rentitplus-desktop_1.2.3_amd64.deb) |
 
-This public companion repository does **not** contain the full private source code. Instead, it is intended to make the project understandable, reviewable, and useful as a technical portfolio artifact.
+Version 1.2.3 updates the production API address and migrates existing desktop configurations that use the retired production endpoint. See the [installation and upgrade guide](docs/desktop-release.md) for setup, checksums, and the macOS notarization limitation.
 
----
+GitHub's automatic **Source code** archives contain this companion repository only, not the application source or installers.
 
-## Why this companion repository exists
+## The problem
 
-The main RentIt+ repository contains the full diploma-project implementation, including internal code, thesis-specific work, private deployment details, and team-specific history.
+Rental operations involve several related decisions: what stock is available at a location, which physical unit is being issued, what a customer has rented, and what has been returned. A desktop used at a service desk or equipment store should retain local working data during a network interruption.
 
-This public repository exists to showcase the engineering work safely:
+RentIt+ separates local work from server confirmation. A desktop operation can be stored locally, but shared availability and concurrent changes still require server validation. Offline-first operation therefore introduces reconciliation and conflict handling; it does not guarantee that every local change will be accepted later.
 
-- Present the architecture without exposing the full private monorepo.
-- Document the offline-first synchronization model.
-- Explain the domain and persistence design.
-- Share selected diagrams, screenshots, and technical write-ups.
-- Extract reusable ideas such as sync contracts, observability concepts, and load-test scenarios.
-- Provide a clean public reference for CVs, interviews, and portfolio discussions.
+## What the project implements
 
----
+| Area | Implemented responsibility |
+|---|---|
+| Catalog | Products, categories, pooled stock, and individually tracked units |
+| Inventory | Location-specific balances, physical units, and inventory transactions |
+| Customers | Customer records and management workflows |
+| Orders | Preparation, order lines, assignment, and cancellation workflows |
+| Rentals | Checkout, rental lines, and return workflows |
+| Desktop | JavaFX interface, SQLite persistence, local changes, and HTTP synchronization |
+| Web administration | Vue interface for catalog, customers, inventory, orders, rentals, devices, and operational views |
+| Observability | HTTP and synchronization events, persisted history, and live SSE streams |
+| Load Lab | Python scenario runner with a separate control API and interface |
+| MCP | Separate runtime exposing tools for reading operational event summaries |
 
-## Project Status
+Load Lab and MCP support testing and operational analysis. Finance, maintenance planning, and advanced scheduling are outside the completed project scope.
 
-RentIt+ is under active development as a diploma and portfolio project.
+## System overview
 
-The private implementation currently includes working versions of the core system areas:
+![RentIt+ system overview](diagrams/SystemView.png)
 
-- Product and category management
-- Customer management
-- Inventory management
-- Orders and rental workflows
-- Desktop offline persistence
-- Sync endpoints and local sync managers
-- Conflict tracking and conflict UI concepts
-- PostgreSQL migrations with Flyway
-- JavaFX desktop UI
-- Web SPA administration interface
-- Observability modules
-- Load and stress testing utilities
+The observability box represents backend event handling and streaming. The separate MCP runtime extends access to operational data through read-only tools.
 
-Some ERP-style modules, such as deeper finance, maintenance planning, document processing, and advanced reservation scheduling, are treated as future extensions rather than the core diploma scope.
+The backend is organized as a modular monolith with domain, application, and adapter modules. The desktop has its own local models and persistence layer, while shared libraries define common domain types and synchronization messages.
 
----
+![RentIt+ desktop workspace](screenshots/desktop-overview.png)
 
-## Architecture at a Glance
+*The JavaFX client keeps a local working store and synchronizes with the backend.*
 
-RentIt+ follows a **modular monolith** approach with clear internal boundaries.
+## Explore the project
 
-The backend is structured around **hexagonal architecture**, also known as **ports and adapters**:
+1. [Guided project tour](docs/project-tour.md): the operational story and suggested review paths.
+2. [Architecture and module boundaries](docs/architecture.md): runtime responsibilities and design tradeoffs.
+3. [Domain model and workflows](docs/domain-and-workflows.md): inventory, preparation, checkout, and returns.
+4. [Offline synchronization](docs/synchronization.md): local identity, acknowledgements, canonical data, and conflicts.
+5. [Observability and MCP](docs/observability-and-mcp.md): visual operational views and read-only tools.
+6. [Testing and Load Lab](docs/testing-and-load-lab.md): test layers, workflow scenarios, and concurrency checks.
+7. [Desktop installation and upgrades](docs/desktop-release.md): setup, checksums, and migration behavior.
+8. [Illustrative protocol samples](samples/README.md): small synthetic JSON examples.
+
+The technical articles describe the implementation associated with desktop release v1.2.3, including its design tradeoffs and operational limits.
+
+## Technology stack
+
+| Area | Technologies |
+|---|---|
+| Backend | Java 21, Spring Boot, Spring Web, Spring Security, JPA/Hibernate |
+| Server persistence | PostgreSQL, Flyway |
+| Desktop | JavaFX, SQLite, Java HTTP client |
+| Web | Vue 3, Vite, Pinia, Vue Router |
+| Testing and lab | JUnit, Mockito, AssertJ, Testcontainers, Python scenarios, FastAPI |
+| Delivery | Gradle, Docker Compose, GitHub Actions, jpackage |
+| Hosting | AWS EC2, Caddy, Cloudflare; Cloudflare Pages for the SPA |
+
+## Reviewing the demo
+
+The [web SPA](https://rentitspa.brianronock.com) and desktop client use the API at `https://rentitapi.brianronock.com`. Account access is separate from downloading an installer.
+
+Treat the shared demo as a demonstration environment. The auditor role supports selected order and desktop rental workflows, so it is not a strictly read-only account. Use only fictional data and avoid changing other visitors' records. For an initial review, start with the documentation and browse existing data.
+
+## Repository contents
 
 ```text
-UI / REST / Sync Controllers
-        |
-        v
-Application Services
-        |
-        v
-Domain Ports and Use Cases
-        |
-        v
-Shared Domain Model
+README.md
+docs/          Architecture, workflows, sync, operational tools, and installation
+samples/       Synthetic synchronization payloads with explanations
+screenshots/   Desktop, web, synchronization, Load Lab, and MCP views
+diagrams/      SystemView.png and SyncProcess.png
 ```
 
-Infrastructure concerns are pushed outward into adapters:
+Installers are available through [GitHub Releases](https://github.com/brianronock/rentitplus/releases). The protocol samples use fictional data to explain the message formats. Application source and deployment configuration remain in the private repository.
 
-```text
-Persistence Adapter  -> PostgreSQL / JPA
-Web Adapter          -> REST API / Sync API
-Desktop Adapter      -> JavaFX / SQLite / HTTP Sync Client
-Observability Adapter -> SSE / Logs / Metrics-like event stream
-```
+## Authors and publication
 
-The goal is to keep business logic independent from frameworks and infrastructure decisions.
+**Brian Rono** and **Babak Nourbakhsh**
 
----
+HTL diploma project in software engineering.
 
-## High-Level System View
-
-![RentIt+ Higl-Level System View](./diagrams/SystemView.png)
-
-
----
-
-## Core Design Ideas
-
-### 1. Offline-first desktop workflow
-
-The desktop client is not just a thin online UI. It can continue working locally using SQLite.
-
-Local operations are stored first and synchronized later. This allows staff to perform operational tasks even when the central server is unreachable.
-
-### 2. Server-authoritative synchronization
-
-The server remains the canonical source of truth. Desktop clients submit structured sync requests containing local mutations and their last known sync cursor.
-
-The backend validates, applies, rejects, or classifies these mutations, then returns acknowledgements, conflicts, canonical updates, and a new server time/cursor.
-
-### 3. Location-aware operation
-
-RentIt+ models inventory and workflow state around physical locations. Desktop devices are registered to a location, and sync requests carry location context so that local work remains scoped to the correct operational boundary.
-
-### 4. Append-only inventory ledger
-
-Inventory changes are represented as ledger-style transactions rather than only final stock snapshots. This makes stock movement easier to explain, audit, and reconcile.
-
-### 5. Separation between planning and execution
-
-The system separates preparation-oriented workflows, such as orders or future reservations, from actual rental execution, such as checkout, return, partial return, and finalization.
-
----
-## Offline Sync Concept
-
-A simplified sync round looks like this:
-
-![RentIt+ offline synchronization process](./diagrams/SyncProcess.png)
-
-The important point is that the client sends **intent**, not just raw table changes. The server decides what can safely become canonical.
----
-
-## Main Functional Areas
-
-| Area | Description |
-|---|---|
-| **Catalog** | Products, categories, pooled products, serialized products |
-| **Inventory** | Location-aware stock, product units, inventory ledger, balance snapshots |
-| **Customers** | Customer records, status, search and filtering |
-| **Rentals** | Checkout, rental lines, partial return, full return, finalization |
-| **Orders** | Preparation and order-building workflows for incoming or planned stock |
-| **Devices** | Desktop client registration and location binding |
-| **Sync** | Product, category, customer, rental, inventory, order, and device sync contracts |
-| **Observability** | Live events, HTTP activity, sync analytics, domain errors, health views |
-| **Load Lab** | Scenario-based stress testing for realistic system behavior |
-
----
-
-## Technology Stack
-
-| Layer | Technologies |
-|---|---|
-| Backend | Java 21, Spring Boot, Gradle, Spring Web, Spring Security, JPA/Hibernate |
-| Database | PostgreSQL, Flyway |
-| Desktop | JavaFX, SQLite, Java HTTP Client |
-| Web SPA | Vue 3, Vite, Pinia, Vue Router |
-| Testing / Lab | Python scenario runner, backend tests, sync stress scenarios |
-| DevOps | Docker Compose, GitHub/GitLab-style CI ideas, release packaging |
-| Architecture | DDD-inspired design, hexagonal architecture, modular monolith, JPMS boundaries |
-
----
-
-## What is public here?
-
-This repository may contain public-safe artifacts such as:
-
-```text
-.
-├── README.md
-├── docs/
-│   ├── architecture/
-│   ├── sync/
-│   ├── domain-model/
-│   ├── observability/
-│   └── load-lab/
-├── diagrams/
-├── screenshots/
-├── samples/
-│   ├── sync-contracts/
-│   ├── load-lab-scenarios/
-│   └── observability-events/
-└── notes/
-```
-
-The exact contents may evolve over time. The goal is not to mirror the private repository, but to explain and demonstrate the most interesting parts of the system.
-
----
-
-## What is intentionally not public?
-
-The following are intentionally excluded from this companion repository:
-
-- Full private monorepo source code
-- Private deployment configuration
-- Real environment variables or credentials
-- Internal Git history
-- Sensitive diploma-project coordination material
-- Full thesis drafts before submission
-- Production database dumps
-- Private test data
-
----
-
-## Suggested Reading Path
-
-If you are reviewing RentIt+ as a portfolio project, a good path is:
-
-1. Start with this README.
-2. Open the architecture overview in `docs/architecture/`.
-3. Review the sync model in `docs/sync/`.
-4. Look at screenshots or diagrams in `screenshots/` and `diagrams/`.
-5. Review selected sample contracts in `samples/`.
-6. Read the load-lab notes to see how the system was stress-tested.
-
----
-
-## Portfolio Highlights
-
-RentIt+ demonstrates practical experience with:
-
-- Designing a non-trivial full-stack system
-- Building a Spring Boot backend with clear application boundaries
-- Modeling a real business domain with products, customers, inventory, orders, and rentals
-- Implementing offline-first workflows with local persistence
-- Designing synchronization contracts and conflict handling
-- Using PostgreSQL as a central canonical data store
-- Using SQLite for embedded desktop persistence
-- Building a JavaFX desktop application
-- Building a modern web administration interface
-- Adding observability for live system behavior
-- Thinking about deployment, packaging, testing, and stress scenarios
-
----
-
-## Current Focus
-
-The current focus of the public companion repository is documentation and demonstration:
-
-- Clean architecture explanation
-- Sync protocol explanation
-- Diagrams and screenshots
-- Public-safe samples
-- Load-testing write-ups
-- Extractable engineering patterns
-
-Future additions may include small standalone demo modules or simplified reference implementations of selected subsystems.
-
----
-
-## License
-
-This companion repository is provided for portfolio and educational purposes.
-
-The license may differ from the private implementation. Until a formal license is added, please treat the contents as **all rights reserved**.
-
----
-
-## Authors
-
-**Brian Rono**  
-**Babak Nourbakhsh**
-
-HTL Diploma Project / Full-Stack Software Engineering Portfolio
-
----
-
-## Tagline
-
-**RentIt+ — reliable rental management, even when the network is not.**
+This repository is provided for portfolio review and educational reference. The contents are **all rights reserved**; no open-source license has been granted. Third-party software bundled with desktop installers is subject to its respective license terms.

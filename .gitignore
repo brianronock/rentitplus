@@ -1,0 +1,22 @@
+# Local IDE and operating-system files
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Local configuration and runtime data
+.env
+.env.*
+!.env.example
+*.db
+*.db-shm
+*.db-wal
+*.log
+
+# Installer files belong in GitHub Releases
+*.dmg
+*.exe
+*.deb
+
+# Private preparation notes
+/SCREENSHOT-CHECKLIST.local.md
