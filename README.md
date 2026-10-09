@@ -41,7 +41,7 @@ RentIt+ separates local work from server confirmation. A desktop operation can b
 | Web administration | Vue interface for catalog, customers, inventory, orders, rentals, devices, and operational views |
 | Observability | HTTP and synchronization events, persisted history, and live SSE streams |
 | Load Lab | Python scenario runner with a separate control API and interface |
-| MCP | Separate runtime exposing tools for reading operational event summaries |
+| MCP | Private runtime with read-only operational tools callable from the administrator SPA and compatible MCP clients |
 
 Load Lab and MCP support testing and operational analysis. Finance, maintenance planning, and advanced scheduling are outside the completed project scope.
 

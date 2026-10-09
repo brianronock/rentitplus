@@ -35,6 +35,18 @@ Queries default to 50 events and are capped at 200 by the server configuration.
 
 MCP gives compatible assistants access to the same operational context through structured tool calls. The tools retrieve event information and summaries; business mutations remain outside this tool set.
 
+## Operational tools in the deployed SPA
+
+Administrators can also execute all four tools directly from the SPA's **System Health → Operational tools** view. The authenticated backend validates the request and calls the separate MCP service over the MCP protocol. Results include event summaries, synchronization health, and correlation-based explanations; no AI provider is required.
+
+The MCP service is deployed alongside the backend through the same deployment workflow. It remains on the private container network, uses service authentication, and connects through a dedicated database account with read access to the operational-event table. The existing SPA observability views continue to use their original API endpoints.
+
+![Operational MCP tools in the deployed SPA](../screenshots/mcp-spa-tools.png)
+
+*An administrator executes a read-only MCP tool from the SPA and inspects the recorded operational context.*
+
+Queries cover a bounded sample of recorded events, not the complete system history. Manual tool execution is implemented and deployed. AI-generated administrator summaries remain deferred; provider configuration is prepared, but no AI provider is connected or called.
+
 ## From tool call to operational context
 
 A synchronization-health query summarizes recorded outcomes. A conflict explanation follows a correlation ID through its event timeline and returns a primary problem and suggested next step. This makes application-specific context available without requiring the assistant to interpret an unrestricted database dump.
