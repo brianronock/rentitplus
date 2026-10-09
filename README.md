@@ -6,9 +6,9 @@ I created this companion repository to present RentIt+ through its architecture,
 
 **[Download Desktop v1.2.3](https://github.com/brianronock/rentitplus/releases/tag/v1.2.3)** · **[Web SPA](https://rentitspa.brianronock.com)** · **[Portfolio](https://brianronock.com)**
 
-![RentIt+ web operations overview](screenshots/web-overview.png)
+![RentIt+ web order queue](screenshots/web-overview.png)
 
-*The web interface brings location inventory and rental operations into a central view.*
+*The web order queue shows preparation progress and order details for the selected location.*
 
 ## Download the desktop client
 
@@ -95,7 +95,7 @@ README.md
 docs/          Architecture, workflows, sync, operational tools, and installation
 samples/       Synthetic synchronization payloads with explanations
 screenshots/   Desktop, web, synchronization, Load Lab, and MCP views
-diagrams/      SystemView.png and SyncProcess.png
+diagrams/      System, workflow, persistence, and module illustrations
 ```
 
 Installers are available through [GitHub Releases](https://github.com/brianronock/rentitplus/releases). The protocol samples use fictional data to explain the message formats. Application source and deployment configuration remain in the private repository.

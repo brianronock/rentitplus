@@ -10,6 +10,10 @@ Two desktop clients can act on different local views of the same inventory. A lo
 
 The sequence summarizes the exchange. Individual aggregates have their own validation and merge rules, and the exchange spans local processing and a server request.
 
+![Local and canonical persistence](../diagrams/dual-persistence.png)
+
+*Original thesis figure, with German labels: SQLite holds local working state and synchronization bookkeeping; PostgreSQL holds canonical server state. Explicit messages carry changes, acknowledgements, and conflicts between them.*
+
 ## An order synchronization round
 
 The order sync manager provides a concrete example of the implemented flow:
@@ -38,7 +42,7 @@ A conflict is a business or synchronization outcome that must be reconciled, not
 
 ![Synchronization conflict detail](../screenshots/sync-conflict-detail.png)
 
-*A conflict explanation exposes the server decision that requires reconciliation.*
+*A development capture shows business-state and stale-version conflicts, with controls for accepting server state.*
 
 ## Business operations rather than arbitrary row replacement
 

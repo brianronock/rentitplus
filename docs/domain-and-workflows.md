@@ -19,6 +19,10 @@
 
 This table is a conceptual model, not a complete database schema. Server persistence uses JPA entities and PostgreSQL migrations; desktop persistence uses local models and SQLite repositories.
 
+![Conceptual business objects](../diagrams/business-objects.png)
+
+*Original thesis figure, with German labels: catalog and contextual data support orders and rentals, which connect to physical units and inventory balances. This is a conceptual overview, not an entity-relationship schema.*
+
 ## Why orders and rentals are separate
 
 An order represents work before handover. Its lines describe what is requested and prepared. A rental represents the issued items and their subsequent return lifecycle. Keeping these concepts separate avoids treating every preparation step as an already completed checkout.
@@ -26,6 +30,10 @@ An order represents work before handover. Its lines describe what is requested a
 The order status model includes `DRAFT`, `OPEN`, `IN_PREPARATION`, `READY_FOR_PICKUP`, `CONVERTED`, and `CANCELLED`. `DRAFT` is a local preparation state. A typical preparation path moves toward readiness and then conversion, subject to business validation.
 
 The rental status model includes `ACTIVE`, `RETURNED`, `LOST`, `CANCELLED`, and `DRAFT`. Checkout and return are the principal workflows described here.
+
+![Order preparation and rental lifecycle](../diagrams/order-to-rental.png)
+
+*Original thesis figure: web planning and desktop preparation lead from an order to a rental, separating requested items from actual issue and return.*
 
 ## A concrete workflow
 

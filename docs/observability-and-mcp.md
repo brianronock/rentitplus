@@ -8,13 +8,17 @@ A synchronization failure can originate in a request, a business decision, or re
 
 The observability implementation separates event models, publishing and reading contracts, and adapters. It provides recent events, persisted history, and SSE streams. The SPA contains operational views for health, HTTP activity, synchronization, errors, and event details.
 
+![Observability publishing and delivery](../diagrams/observability-flow.png)
+
+*Original thesis figure, with German labels: backend event sources publish through interfaces; the observability components provide events to the SPA through SSE and API views. The figure emphasizes the recent-event buffer; persisted history is an additional part of the implementation.*
+
 ## Correlation and summaries
 
 Correlation identifiers connect related events. The service builds summaries describing an outcome, severity, whether attention is required, the business area, and an operator-oriented explanation. An operator can select a problematic operation and follow its recorded context.
 
-![Operational event detail](../screenshots/observability-event-detail.png)
+![System health and aggregate event activity](../screenshots/observability-event-detail.png)
 
-*Event details connect a recorded outcome to its operational context.*
+*The System Health view summarizes event activity, event families, operator information, and stream health.*
 
 ## The separate MCP runtime
 

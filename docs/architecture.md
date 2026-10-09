@@ -38,6 +38,16 @@ For example, order creation crosses an HTTP payload mapper, an order-creation us
 
 The separation gives the implementation places to distinguish transport validation, business decisions, and storage mechanics. It does not mean that every layer is framework-free: application services use Spring dependency injection and transaction support.
 
+![Backend request flow](../diagrams/backend-request-flow.png)
+
+*Original thesis figure, with German labels: a request crosses the controller, command, application service, domain and persistence boundary before reaching PostgreSQL.*
+
+## Desktop module boundary
+
+![Desktop UI and core responsibilities](../diagrams/desktop-modules.png)
+
+*The desktop UI calls local core services. The core manages SQLite persistence, API clients, synchronization, and local context. The original German labels distinguish the user interface, local application logic, local database, and central backend.*
+
 ## Local and canonical models
 
 The desktop database is a local working store, not a direct connection to PostgreSQL. Local records carry information needed for disconnected work, including client references and pending synchronization state. The server assigns its own identifiers and versions.
